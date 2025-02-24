@@ -4,15 +4,16 @@ import inject
 import os
 from llms import LLM, OpenAILLM, GroqLLM, HuggingFaceLLM
 from llm_config import LLMConfig
+import logging
 
 def llm_provider_injector(binder: inject.Binder):
     """
     This function binds the LLM class and LLMConfig to specific instances.
     """
-    provider = os.getenv("LLM_PROVIDER", "openai")  
+    provider = os.environ.get("LLM_PROVIDER", "openai")  
     api_key = os.getenv("LLM_API_KEY", "dummy_api_key") 
     model_name = os.getenv("LLM_MODEL", "gpt-4")  
-    
+    logging.info(f'provider is {provider}')
     llm_config = LLMConfig(provider=provider, api_key=api_key, model_name=model_name)
     binder.bind(LLMConfig, llm_config)
 
