@@ -1,24 +1,40 @@
 # llms.py
 
 from abc import ABC, abstractmethod
+from llm_config import LLMConfig
 
-# Base LLM class (Interface)
 class LLM(ABC):
+    """
+    Abstract Base Class (ABC) for all LLM implementations.
+    Requires an `LLMConfig` instance.
+    """
+    def __init__(self, config: LLMConfig):
+        self.config = config
+
     @abstractmethod
     def call_llm(self, prompts: list) -> dict:
         pass
 
-# OpenAI Implementation
 class OpenAILLM(LLM):
-    def generate_text(self, prompts: list) -> dict:
-        return f"OpenAI Responses: {prompts}"  # Dummy example (reverses text)
+    def call_llm(self, prompts: list) -> dict:
+        return {
+            "provider": self.config.provider,
+            "model": self.config.model_name,
+            "responses": prompts
+        }
 
-# Groq Implementation
 class GroqLLM(LLM):
-    def generate_text(self, prompt: list) -> dict:
-        return f"Groq Response: {prompts}"
+    def call_llm(self, prompts: list) -> dict:
+        return {
+            "provider": self.config.provider,
+            "model": self.config.model_name,
+            "responses": [prompt.upper() for prompt in prompts]
+        }
 
-# Hugging Face Implementation
 class HuggingFaceLLM(LLM):
-    def generate_text(self, prompt: list) -> dict:
-        return f"HuggingFace Response: {prompt.lower()}"
+    def call_llm(self, prompts: list) -> dict:
+        return {
+            "provider": self.config.provider,
+            "model": self.config.model_name,
+            "responses": [prompt.lower() for prompt in prompts]
+        }
